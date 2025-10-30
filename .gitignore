@@ -6,3 +6,14 @@
 
 # iCloud Drive placeholders
 *.icloud
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb#*
+# Python
+__pycache__/
+*.pyc
+.venv/
+# macOS/iCloud
+.DS_Store
+*.icloud
