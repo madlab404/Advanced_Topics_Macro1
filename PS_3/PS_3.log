@@ -1,0 +1,85 @@
+Starting Dynare (version 5.4).
+Calling Dynare with arguments: none
+Starting preprocessing of the model file ...
+Found 3 equation(s).
+Evaluating expressions...done
+Computing static model derivatives (order 1).
+Computing dynamic model derivatives (order 1).
+Processing outputs ...
+done
+Preprocessing completed.
+
+
+STEADY-STATE RESULTS:
+
+c 		 1.20247
+k 		 5.14667
+z 		 0
+
+EIGENVALUES:
+         Modulus             Real        Imaginary
+
+          0.8888           0.8888                0
+            0.95             0.95                0
+           1.156            1.156                0
+             Inf             -Inf                0
+             Inf              Inf                0
+
+
+There are 3 eigenvalue(s) larger than 1 in modulus 
+for 3 forward-looking variable(s)
+
+The rank condition is verified.
+
+
+MODEL SUMMARY
+
+  Number of variables:         3
+  Number of stochastic shocks: 1
+  Number of state variables:   2
+  Number of jumpers:           3
+  Number of static variables:  0
+
+
+MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
+Variables       eps_z
+eps_z        1.000000
+
+POLICY AND TRANSITION FUNCTIONS
+                                   c               k               z
+Constant                    1.202465        5.146670               0
+k(-1)                       0.121264        0.888837               0
+z(-1)                       0.645025        0.986251        0.950000
+eps_z                       0.006790        0.010382        0.010000
+
+
+MOMENTS OF SIMULATED VARIABLES
+VARIABLE              MEAN       STD. DEV.        VARIANCE        SKEWNESS        KURTOSIS
+c                 1.244479        0.030408        0.000925        0.089878       -0.831505
+k                 5.362393        0.147306        0.021699        0.077067       -0.886912
+z                 0.023418        0.023789        0.000566        0.157356       -0.736847
+
+
+CORRELATION OF SIMULATED VARIABLES
+VARIABLE         c       k       z
+c           1.0000  0.9533  0.8801
+k           0.9533  1.0000  0.6956
+z           0.8801  0.6956  1.0000
+
+
+AUTOCORRELATION OF SIMULATED VARIABLES
+VARIABLE         1       2       3       4       5
+c           0.9658  0.9234  0.8757  0.8182  0.7544
+k           0.9864  0.9613  0.9235  0.8753  0.8191
+z           0.8964  0.7952  0.7142  0.6269  0.5400
+--------------------------------------------
+Delta = 0.1
+Euler errors (levels):
+  max  |EE_t| = 0.010085
+  mean |EE_t| = 0.0030267
+--------------------------------------------
+Euler errors in units of consumption:
+  max  |c_t * EE_t| = 0.012214
+  mean |c_t * EE_t| = 0.0037673
+--------------------------------------------
+Total computing time : 0h00m00s

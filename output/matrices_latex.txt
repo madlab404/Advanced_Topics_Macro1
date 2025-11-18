@@ -1,0 +1,25 @@
+\[H = \begin{bmatrix}
+1.0171 & -0.0738 \\
+-0.2336 & 1.0101 \\
+\end{bmatrix}\]
+
+\[G = \begin{bmatrix}
+0.0792 \\
+0.3336 \\
+\end{bmatrix}\]
+
+\noindent Eigenvalues of H:
+1.1449, 0.8823
+
+\[H = \begin{bmatrix}
+2.3808 & -0.6768 \\
+-2.0609 & 1.0101 \\
+\end{bmatrix}\]
+
+\[G = \begin{bmatrix}
+-1.1008 \\
+3.0609 \\
+\end{bmatrix}\]
+
+\noindent Eigenvalues of H:
+3.0609, 0.3300
