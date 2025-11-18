@@ -4,7 +4,7 @@ Starting preprocessing of the model file ...
 Found 3 equation(s).
 Evaluating expressions...done
 Computing static model derivatives (order 1).
-Computing dynamic model derivatives (order 1).
+Computing dynamic model derivatives (order 2).
 Processing outputs ...
 done
 Preprocessing completed.
@@ -47,39 +47,50 @@ eps_z        1.000000
 
 POLICY AND TRANSITION FUNCTIONS
                                    c               k               z
-Constant                    1.202465        5.146670               0
+Constant                    1.202427        5.146708               0
+(correction)               -0.000038        0.000038               0
 k(-1)                       0.121264        0.888837               0
 z(-1)                       0.645025        0.986251        0.950000
 eps_z                       0.006790        0.010382        0.010000
+k(-1),k(-1)                -0.004009       -0.003158               0
+z(-1),k(-1)                 0.036906        0.067690               0
+z(-1),z(-1)                 0.272512        0.502344               0
+eps_z,eps_z                 0.000030        0.000056               0
+k(-1),eps_z                 0.000388        0.000713               0
+z(-1),eps_z                 0.005737        0.010576               0
 
 
 MOMENTS OF SIMULATED VARIABLES
 VARIABLE              MEAN       STD. DEV.        VARIANCE        SKEWNESS        KURTOSIS
-c                 1.244479        0.030408        0.000925        0.089878       -0.831505
-k                 5.362393        0.147306        0.021699        0.077067       -0.886912
+c                 1.245794        0.031491        0.000992        0.131686       -0.811596
+k                 5.370854        0.153781        0.023649        0.121378       -0.865222
 z                 0.023418        0.023789        0.000566        0.157356       -0.736847
 
 
 CORRELATION OF SIMULATED VARIABLES
 VARIABLE         c       k       z
-c           1.0000  0.9533  0.8801
-k           0.9533  1.0000  0.6956
-z           0.8801  0.6956  1.0000
+c           1.0000  0.9532  0.8800
+k           0.9532  1.0000  0.6952
+z           0.8800  0.6952  1.0000
 
 
 AUTOCORRELATION OF SIMULATED VARIABLES
 VARIABLE         1       2       3       4       5
-c           0.9658  0.9234  0.8757  0.8182  0.7544
-k           0.9864  0.9613  0.9235  0.8753  0.8191
+c           0.9658  0.9234  0.8759  0.8184  0.7543
+k           0.9864  0.9613  0.9235  0.8752  0.8189
 z           0.8964  0.7952  0.7142  0.6269  0.5400
---------------------------------------------
-Delta = 0.1
-Euler errors (levels):
-  max  |EE_t| = 0.010085
-  mean |EE_t| = 0.0030267
---------------------------------------------
-Euler errors in units of consumption:
-  max  |c_t * EE_t| = 0.012214
-  mean |c_t * EE_t| = 0.0037673
---------------------------------------------
-Total computing time : 0h00m00s
+
+ans =
+
+    0.8888    0.9863
+         0    0.9500
+    0.1213    0.6450
+
+
+ans =
+
+    0.0104
+    0.0100
+    0.0068
+
+Total computing time : 0h00m03s

@@ -89,6 +89,8 @@ options_.linear = false;
 options_.block = false;
 options_.bytecode = false;
 options_.use_dll = false;
+M_.nonzero_hessian_eqs = [1 2];
+M_.hessian_eq_zero = isempty(M_.nonzero_hessian_eqs);
 M_.orig_eq_nbr = 3;
 M_.eq_nbr = 3;
 M_.ramsey_eq_nbr = 0;
@@ -115,7 +117,7 @@ M_.nboth   = 2;
 M_.nsfwrd   = 3;
 M_.nspred   = 2;
 M_.ndynamic   = 3;
-M_.dynamic_tmp_nbr = [3; 0; 0; 0; ];
+M_.dynamic_tmp_nbr = [3; 2; 0; 0; ];
 M_.model_local_variables_dynamic_tt_idxs = {
 };
 M_.equations_tags = {
@@ -141,7 +143,7 @@ M_.maximum_exo_lead = 0;
 oo_.exo_steady_state = zeros(1, 1);
 M_.params = NaN(8, 1);
 M_.endo_trends = struct('deflator', cell(3, 1), 'log_deflator', cell(3, 1), 'growth_factor', cell(3, 1), 'log_growth_factor', cell(3, 1));
-M_.NNZDerivatives = [11; -1; -1; ];
+M_.NNZDerivatives = [11; 14; -1; ];
 M_.static_tmp_nbr = [3; 0; 0; 0; ];
 M_.model_local_variables_static_tt_idxs = {
 };
@@ -185,53 +187,156 @@ set_dynare_seed(12345);
 options_.drop = 0;
 options_.irf = 0;
 options_.nograph = true;
-options_.order = 1;
+options_.order = 2;
 options_.periods = 200;
 var_list_ = {};
 [info, oo_, options_, M_] = stoch_simul(M_, options_, oo_, var_list_);
-idx_c = strmatch('c', M_.endo_names, 'exact');
-idx_k = strmatch('k', M_.endo_names, 'exact');
-idx_z = strmatch('z', M_.endo_names, 'exact');
-c_sim = oo_.endo_simul(idx_c, :);
-k_sim = oo_.endo_simul(idx_k, :);
-z_sim = oo_.endo_simul(idx_z, :);
-T = length(c_sim);
-EE = zeros(1, T-1);
-for t = 1:(T-1)
-c_t   = c_sim(t);
-c_tp1 = c_sim(t+1);
-k_tp1 = k_sim(t+1);
-z_tp1 = z_sim(t+1);
-EE(t) = 1/c_t ...
-            - beta * ( (alpha*exp(z_tp1)*k_tp1^(alpha-1) + (1-delta)) / c_tp1 );
-end
-max_EE  = max(abs(EE));
-mean_EE = mean(abs(EE));
-disp('--------------------------------------------');
-disp(['Delta = ', num2str(delta)]);
-disp('Euler errors (levels):');
-disp(['  max  |EE_t| = ', num2str(max_EE)]);
-disp(['  mean |EE_t| = ', num2str(mean_EE)]);
-disp('--------------------------------------------');
-EE_c      = c_sim(1:end-1) .* EE;
-max_EE_c  = max(abs(EE_c));
-mean_EE_c = mean(abs(EE_c));
-disp('Euler errors in units of consumption:');
-disp(['  max  |c_t * EE_t| = ', num2str(max_EE_c)]);
-disp(['  mean |c_t * EE_t| = ', num2str(mean_EE_c)]);
-disp('--------------------------------------------');
 k_name = ['k_path_delta_', strrep(num2str(delta), '.', '_')];
 assignin('base', k_name, k_sim);
 idx_k = strmatch('k', M_.endo_names, 'exact');
 k_sim = oo_.endo_simul(idx_k, :);   
 T     = length(k_sim);
-figure;
-plot(1:T, k_sim);
+if ~exist('dynare_results', 'var')
+dynare_results = struct();
+end
+if delta == 0.1
+dynare_results.dynare_01.k = k_sim;
+dynare_results.dynare_01.T = T;
+elseif delta == 1
+dynare_results.dynare_1.k = k_sim;
+dynare_results.dynare_1.T = T;
+end
+outdir = 'output Dynare';
+if ~exist(outdir, 'dir')
+mkdir(outdir);
+end
+save(fullfile(outdir, 'dynare_results.mat'), 'dynare_results');
+create_plot = 1;
+if create_plot == 1 
+load(fullfile(outdir, 'dynare_results.mat'));  
+figure('Units','inches','Position',[1 1 8 10]);
+subplot(2,1,1);
+plot(1:dynare_results.dynare_01.T, dynare_results.dynare_01.k);
 xlabel('Time');
-ylabel('Capital k_t');
-title('Simulated path of capital');
+ylabel('k_t');
+title('Capital, \delta = 0.1');
 grid on;
+subplot(2,1,2);
+plot(1:dynare_results.dynare_1.T, dynare_results.dynare_1.k);
+xlabel('Time');
+ylabel('k_t');
+title('Capital, \delta = 1');
+grid on;
+savefig(fullfile(outdir, 'capital_compare.fig'));
+saveas(gcf, fullfile(outdir, 'capital_compare_dynare.png'));
+end 
 save('z_sim.mat', 'z_sim')
+idx_c = dr.inv_order_var(strmatch('c', M_.endo_names, 'exact'));
+idx_k = dr.inv_order_var(strmatch('k', M_.endo_names, 'exact'));
+idx_z = dr.inv_order_var(strmatch('z', M_.endo_names, 'exact'));
+state_pos = dr.kstate(:,1);   
+ik = 1;                       
+ieps = 1;                     
+oo_.dr.ghx     
+oo_.dr.ghu     
+dr = oo_.dr;
+idx_c = dr.inv_order_var(strmatch('c', M_.endo_names, 'exact'));
+idx_k = dr.inv_order_var(strmatch('k', M_.endo_names, 'exact'));
+idx_z = dr.inv_order_var(strmatch('z', M_.endo_names, 'exact'));
+state_pos = dr.kstate(:,1);
+shock_pos = 1:size(dr.ghu,2); 
+A1 = dr.ghx;   
+B1 = dr.ghu;   
+A1_c = A1(idx_c,:);   
+A1_k = A1(idx_k,:);   
+A1_z = A1(idx_z,:);   
+B1_c = B1(idx_c,:);   
+B1_k = B1(idx_k,:);   
+B1_z = B1(idx_z,:);   
+A2 = dr.ghxx;   
+B2 = dr.ghuu;   
+C2 = dr.ghxu;   
+A2_c = squeeze(A2(idx_c,:,:));   
+B2_c = squeeze(B2(idx_c,:,:));   
+C2_c = squeeze(C2(idx_c,:,:));   
+A2_k = squeeze(A2(idx_k,:,:));
+B2_k = squeeze(B2(idx_k,:,:));
+C2_k = squeeze(C2(idx_k,:,:));
+Nk     = 1000;
+k_min  = 0.5 * k_ss;
+k_max  = 2 * k_ss;
+k_grid = linspace(k_min, k_max, Nk);
+EE_1st = zeros(1, Nk);
+EE_2nd = zeros(1, Nk);
+corr_c = dr.ghs2(idx_c);
+corr_k = dr.ghs2(idx_k);
+for i = 1:Nk
+k_t  = k_grid(i);
+k_hat = log(k_t/k_ss);   
+z_hat = 0;               
+c_hat_1  = A1_c(ik) * k_hat;
+k1_hat_1 = A1_k(ik) * k_hat;
+c_t_1    = c_ss * exp(c_hat_1);
+k_tp1_1  = k_ss * exp(k1_hat_1);
+c1_hat_1 = A1_c(ik) * k1_hat_1;
+c_tp1_1  = c_ss * exp(c1_hat_1);
+EE_1st(i) = 1/c_t_1 - beta * (alpha*k_tp1_1^(alpha-1) + (1-delta))/c_tp1_1;
+c_hat_2  = ...
+             A1_c(ik)*k_hat ...
+           + 0.5*A2_c(ik,ik)*k_hat^2 ...
+           + corr_c;
+k1_hat_2 = ...
+             A1_k(ik)*k_hat ...
+           + 0.5*A2_k(ik,ik)*k_hat^2 ...
+           + corr_k;
+c_t_2   = c_ss * exp(c_hat_2);
+k_tp1_2 = k_ss * exp(k1_hat_2);
+c1_hat_2 = ...
+             A1_c(ik)*k1_hat_2 ...
+           + 0.5*A2_c(ik,ik)*k1_hat_2^2 ...
+           + corr_c;
+c_tp1_2  = c_ss * exp(c1_hat_2);
+EE_2nd(i) = 1/c_t_2 - beta * (alpha*k_tp1_2^(alpha-1) + (1-delta))/c_tp1_2;
+end
+if ~exist('EEE','var')
+EEE = struct();
+end
+if delta == 0.1
+EEE.dynare_01.EE1   = EE_1st;
+EEE.dynare_01.EE2   = EE_2nd;
+EEE.dynare_01.kgrid = k_grid;
+elseif delta == 1
+EEE.dynare_1.EE1   = EE_1st;
+EEE.dynare_1.EE2   = EE_2nd;
+EEE.dynare_1.kgrid = k_grid;
+end
+outdir = 'output Dynare';
+if ~exist(outdir, 'dir')
+mkdir(outdir);
+end
+save(fullfile(outdir, 'dynare_results.mat'), 'dynare_results', 'EEE');
+if create_plot == 1
+load(fullfile(outdir, 'dynare_results.mat'));  
+figure('Units','inches','Position',[1 1 8 10]);
+subplot(2,1,1);
+plot(EEE.dynare_01.kgrid, log10(abs(EEE.dynare_01.EE1)), 'LineWidth', 1.4); hold on;
+plot(EEE.dynare_01.kgrid, log10(abs(EEE.dynare_01.EE2)), '--', 'LineWidth', 1.4);
+xlabel('k_t');
+ylabel('log_{10} |EE|');
+title('Euler errors, \delta = 0.1');
+legend('1st order','2nd order','Location','best');
+grid on;
+subplot(2,1,2);
+plot(EEE.dynare_1.kgrid, log10(abs(EEE.dynare_1.EE1)), 'LineWidth', 1.4); hold on;
+plot(EEE.dynare_1.kgrid, log10(abs(EEE.dynare_1.EE2)), '--', 'LineWidth', 1.4);
+xlabel('k_t');
+ylabel('log_{10} |EE|');
+title('Euler errors, \delta = 1');
+legend('1st order','2nd order','Location','best');
+grid on;
+savefig(fullfile(outdir, 'EEE_compare.fig'));
+saveas(gcf, fullfile(outdir, 'EEE_compare_dynare.png'));
+end
 
 
 oo_.time = toc(tic0);

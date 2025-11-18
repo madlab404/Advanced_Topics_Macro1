@@ -112,7 +112,7 @@ stoch_simul(order=2, irf=0, periods=200, drop=0, nograph);
     if create_plot == 1 
         load(fullfile(outdir, 'dynare_results.mat'));  % loads dynare_results
 
-        figure('Units','inches','Position',[1 1 8 10]);
+        figure;
             % Top plot: delta = 0.1
             subplot(2,1,1);
             plot(1:dynare_results.dynare_01.T, dynare_results.dynare_01.k);
@@ -268,56 +268,63 @@ stoch_simul(order=2, irf=0, periods=200, drop=0, nograph);
     % ================================================================
     % Plot results
     % ================================================================
- 
-    if ~exist('EEE','var')
-        EEE = struct();
-    end
-    
+    figure;
+    plot(k_grid, log10(abs(EE_1st)), 'LineWidth',1.4); hold on;
+    plot(k_grid, log10(abs(EE_2nd)), '--', 'LineWidth',1.4);
+    legend('First-order','Second-order');
+    xlabel('k_t');
+    ylabel('log10 |Euler Error|');
+    title('Euler Errors for 1st-order and 2nd-order Policy Functions');
+    grid on;
+
+    % Save comparison figure
+    savefig(fullfile(outdir, 'EEE.fig'));
+    saveas(gcf, fullfile(outdir, 'EEE.png'));
+
+
     if delta == 0.1
-        EEE.dynare_01.EE1   = EE_1st;
-        EEE.dynare_01.EE2   = EE_2nd;
+        EEE.dynare_01.EEE1 = EE_1st;
+        EEE.dynare_01.EEE1 = EE_1st;
         EEE.dynare_01.kgrid = k_grid;
     elseif delta == 1
-        EEE.dynare_1.EE1   = EE_1st;
-        EEE.dynare_1.EE2   = EE_2nd;
+        EEE.dynare_1.EEE01 = EE_1st;
+        EEE.dynare_1.EEE01= EE_1st;
         EEE.dynare_1.kgrid = k_grid;
     end
-
+    
     outdir = 'output Dynare';
     if ~exist(outdir, 'dir')
         mkdir(outdir);
     end
-    save(fullfile(outdir, 'dynare_results.mat'), 'dynare_results', 'EEE');
+    save(fullfile(outdir, 'dynare_results.mat'), 'dynare_results');
     
-
-    if create_plot == 1
-    load(fullfile(outdir, 'dynare_results.mat'));  % loads dynare_results and EEE
-
-    % ---- NEW: Euler error comparison figure ----
-   
-    figure('Units','inches','Position',[1 1 8 10]);
-        % delta = 0.1
-        subplot(2,1,1);
-        plot(EEE.dynare_01.kgrid, log10(abs(EEE.dynare_01.EE1)), 'LineWidth', 1.4); hold on;
-        plot(EEE.dynare_01.kgrid, log10(abs(EEE.dynare_01.EE2)), '--', 'LineWidth', 1.4);
-        xlabel('k_t');
-        ylabel('log_{10} |EE|');
-        title('Euler errors, \delta = 0.1');
-        legend('1st order','2nd order','Location','best');
-        grid on;
-
-        % delta = 1
-        subplot(2,1,2);
-        plot(EEE.dynare_1.kgrid, log10(abs(EEE.dynare_1.EE1)), 'LineWidth', 1.4); hold on;
-        plot(EEE.dynare_1.kgrid, log10(abs(EEE.dynare_1.EE2)), '--', 'LineWidth', 1.4);
-        xlabel('k_t');
-        ylabel('log_{10} |EE|');
-        title('Euler errors, \delta = 1');
-        legend('1st order','2nd order','Location','best');
-        grid on;
-
-    savefig(fullfile(outdir, 'EEE_compare.fig'));
-    saveas(gcf, fullfile(outdir, 'EEE_compare_dynare.png'));
-end
-
+    % Creating the plot 
+    create_plot = 1;
     
+    if create_plot == 1 
+        load(fullfile(outdir, 'dynare_results.mat'));  % loads dynare_results
+
+        figure;
+            % Top plot: delta = 0.1
+            subplot(2,1,1);
+            plot(1:dynare_results.dynare_01.T, dynare_results.dynare_01.k);
+            xlabel('Time');
+            ylabel('k_t');
+            title('Capital, \delta = 0.1');
+            grid on;
+            
+            % Bottom plot: delta = 1
+            subplot(2,1,2);
+            plot(1:dynare_results.dynare_1.T, dynare_results.dynare_1.k);
+            xlabel('Time');
+            ylabel('k_t');
+            title('Capital, \delta = 1');
+            grid on;
+    
+        % Save comparison figure
+        savefig(fullfile(outdir, 'capital_compare.fig'));
+        saveas(gcf, fullfile(outdir, 'capital_compare_dynare.png'));
+
+    end 
+
+

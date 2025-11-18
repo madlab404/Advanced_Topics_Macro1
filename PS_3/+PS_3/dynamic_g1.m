@@ -25,10 +25,10 @@ end
 g1 = zeros(3, 9);
 g1(1,3)=(-1)/(y(3)*y(3));
 g1(1,6)=(-(params(1)*(-T(2))/(y(6)*y(6))));
-g1(1,7)=(-(params(1)*params(2)*exp(y(8))*getPowerDeriv(y(7),params(2)-1,1)/y(6)));
+g1(1,7)=(-(params(1)*T(5)/y(6)));
 g1(1,8)=(-(params(1)*T(1)/y(6)));
 g1(2,3)=1;
-g1(2,1)=(-(1-params(3)+exp(y(5))*getPowerDeriv(y(1),params(2),1)));
+g1(2,1)=(-(1-params(3)+T(4)));
 g1(2,4)=1;
 g1(2,5)=(-T(3));
 g1(3,2)=(-params(4));
