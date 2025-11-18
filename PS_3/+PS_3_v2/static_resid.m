@@ -1,5 +1,5 @@
-function g2 = static_g2(T, y, x, params, T_flag)
-% function g2 = static_g2(T, y, x, params, T_flag)
+function residual = static_resid(T, y, x, params, T_flag)
+% function residual = static_resid(T, y, x, params, T_flag)
 %
 % File created by Dynare Preprocessor from .mod file
 %
@@ -12,12 +12,23 @@ function g2 = static_g2(T, y, x, params, T_flag)
 %   T_flag    boolean                 boolean  flag saying whether or not to calculate temporary terms
 %
 % Output:
-%   g2
+%   residual
 %
 
 if T_flag
-    T = PS_3.static_g2_tt(T, y, x, params);
+    T = PS_3_v2.static_resid_tt(T, y, x, params);
 end
-g2 = sparse([],[],[],3,9);
-
+residual = zeros(3, 1);
+lhs = 1/y(1);
+rhs = params(1)*T(2)/y(1);
+residual(1) = lhs - rhs;
+lhs = y(1)+y(2);
+rhs = T(3)+y(2)*(1-params(3));
+residual(2) = lhs - rhs;
+lhs = y(3);
+rhs = y(3)*params(4)+params(5)*x(1);
+residual(3) = lhs - rhs;
+if ~isreal(residual)
+  residual = real(residual)+imag(residual).^2;
+end
 end

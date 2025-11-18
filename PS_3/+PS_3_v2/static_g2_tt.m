@@ -15,7 +15,7 @@ function T = static_g2_tt(T, y, x, params)
 
 assert(length(T) >= 3);
 
-T = PS_3.static_g1_tt(T, y, x, params);
+T = PS_3_v2.static_g1_tt(T, y, x, params);
 
 
 end

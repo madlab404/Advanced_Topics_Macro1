@@ -1,5 +1,5 @@
-function T = dynamic_g3_tt(T, y, x, params, steady_state, it_)
-% function T = dynamic_g3_tt(T, y, x, params, steady_state, it_)
+function T = dynamic_g2_tt(T, y, x, params, steady_state, it_)
+% function T = dynamic_g2_tt(T, y, x, params, steady_state, it_)
 %
 % File created by Dynare Preprocessor from .mod file
 %
@@ -20,7 +20,7 @@ function T = dynamic_g3_tt(T, y, x, params, steady_state, it_)
 
 assert(length(T) >= 5);
 
-T = PS_3.dynamic_g2_tt(T, y, x, params, steady_state, it_);
+T = PS_3_v2.dynamic_g1_tt(T, y, x, params, steady_state, it_);
 
 
 end

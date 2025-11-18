@@ -20,7 +20,7 @@ function residual = dynamic_resid(T, y, x, params, steady_state, it_, T_flag)
 %
 
 if T_flag
-    T = PS_3.dynamic_resid_tt(T, y, x, params, steady_state, it_);
+    T = PS_3_v2.dynamic_resid_tt(T, y, x, params, steady_state, it_);
 end
 residual = zeros(3, 1);
 lhs = 1/y(3);

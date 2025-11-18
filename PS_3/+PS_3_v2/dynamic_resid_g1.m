@@ -5,9 +5,9 @@ function [residual, g1] = dynamic_resid_g1(T, y, x, params, steady_state, it_, T
 %
 
     if T_flag
-        T = PS_3.dynamic_g1_tt(T, y, x, params, steady_state, it_);
+        T = PS_3_v2.dynamic_g1_tt(T, y, x, params, steady_state, it_);
     end
-    residual = PS_3.dynamic_resid(T, y, x, params, steady_state, it_, false);
-    g1       = PS_3.dynamic_g1(T, y, x, params, steady_state, it_, false);
+    residual = PS_3_v2.dynamic_resid(T, y, x, params, steady_state, it_, false);
+    g1       = PS_3_v2.dynamic_g1(T, y, x, params, steady_state, it_, false);
 
 end

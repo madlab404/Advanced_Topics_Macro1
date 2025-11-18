@@ -1,5 +1,5 @@
-function g3 = static_g3(T, y, x, params, T_flag)
-% function g3 = static_g3(T, y, x, params, T_flag)
+function g1 = static_g1(T, y, x, params, T_flag)
+% function g1 = static_g1(T, y, x, params, T_flag)
 %
 % File created by Dynare Preprocessor from .mod file
 %
@@ -12,12 +12,21 @@ function g3 = static_g3(T, y, x, params, T_flag)
 %   T_flag    boolean                 boolean  flag saying whether or not to calculate temporary terms
 %
 % Output:
-%   g3
+%   g1
 %
 
 if T_flag
-    T = PS_3.static_g3_tt(T, y, x, params);
+    T = PS_3_v2.static_g1_tt(T, y, x, params);
 end
-g3 = sparse([],[],[],3,27);
-
+g1 = zeros(3, 3);
+g1(1,1)=(-1)/(y(1)*y(1))-params(1)*(-T(2))/(y(1)*y(1));
+g1(1,2)=(-(params(1)*params(2)*exp(y(3))*getPowerDeriv(y(2),params(2)-1,1)/y(1)));
+g1(1,3)=(-(params(1)*T(1)/y(1)));
+g1(2,1)=1;
+g1(2,2)=1-(1-params(3)+exp(y(3))*getPowerDeriv(y(2),params(2),1));
+g1(2,3)=(-T(3));
+g1(3,3)=1-params(4);
+if ~isreal(g1)
+    g1 = real(g1)+2*imag(g1);
+end
 end

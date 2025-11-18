@@ -20,7 +20,7 @@ function g2 = dynamic_g2(T, y, x, params, steady_state, it_, T_flag)
 %
 
 if T_flag
-    T = PS_3.dynamic_g2_tt(T, y, x, params, steady_state, it_);
+    T = PS_3_v2.dynamic_g2_tt(T, y, x, params, steady_state, it_);
 end
 g2_i = zeros(14,1);
 g2_j = zeros(14,1);
