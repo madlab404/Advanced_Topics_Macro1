@@ -21,7 +21,7 @@ beta   = 0.99;
 alpha  = 0.33;
 
 % run twice: delta = 0.1 and delta = 1
-delta  = 0.1;
+delta  = 1;
 
 rho_z   = 0.95;
 sigma_z = 0.01;

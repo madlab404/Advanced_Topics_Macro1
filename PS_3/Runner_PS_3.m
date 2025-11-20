@@ -7,6 +7,7 @@
 
 %Instructions: Run once with delta = 0.1 and once with delta = 1 without
 %clearing 
+%addpath /Applications/Dynare/5.4/matlab/
 
 clearvars -except dynare_results EEE
 dynare PS_3_v2 
@@ -66,22 +67,22 @@ dynare PS_3_v2
     if create_plot == 1 
         load(fullfile(outdir, 'dynare_results.mat'));  % loads dynare_results
 
-        figure('Units','inches','Position',[1 1 8 10]);
+        figure('Units','inches','Position',[1 1 10 4]);  
             % Top plot: delta = 0.1
-            subplot(2,1,1);
+            subplot(1,2,2);
             plot(1:dynare_results.dynare_01.T, dynare_results.dynare_01.k);
             xlabel('Time');
             ylabel('k_t');
             title('Capital, \delta = 0.1');
-            grid on;
+            grid off;
             
             % Bottom plot: delta = 1
-            subplot(2,1,2);
+            subplot(1,2,1);
             plot(1:dynare_results.dynare_1.T, dynare_results.dynare_1.k);
             xlabel('Time');
             ylabel('k_t');
             title('Capital, \delta = 1');
-            grid on;
+            grid off;
     
         % Save comparison figure
         savefig(fullfile(outdir, 'capital_compare.fig'));
@@ -330,27 +331,27 @@ if create_plot == 1
     load(fullfile(outdir, 'EEE_results.mat'), 'EEE');
 
     % ---- Euler error comparison figure ----
-    figure('Units','inches','Position',[1 1 8 10]);
+    figure('Units','inches','Position',[1 1 10 4]);
 
         % delta = 0.1
-        subplot(2,1,1);
+        subplot(1,2,2);
         plot(EEE.dynare_01.kgrid, log10(abs(EEE.dynare_01.EE1)), 'LineWidth', 1.4); hold on;
         plot(EEE.dynare_01.kgrid, log10(abs(EEE.dynare_01.EE2)), '--', 'LineWidth', 1.4);
         xlabel('k_t');
         ylabel('log_{10} |EE|');
         title('Euler errors, \delta = 0.1');
         legend('1st order','2nd order','Location','best');
-        grid on;
+        grid off;
 
         % delta = 1
-        subplot(2,1,2);
+        subplot(1,2,1);
         plot(EEE.dynare_1.kgrid, log10(abs(EEE.dynare_1.EE1)), 'LineWidth', 1.4); hold on;
         plot(EEE.dynare_1.kgrid, log10(abs(EEE.dynare_1.EE2)), '--', 'LineWidth', 1.4);
         xlabel('k_t');
         ylabel('log_{10} |EE|');
         title('Euler errors, \delta = 1');
         legend('1st order','2nd order','Location','best');
-        grid on;
+        grid off;
 
     % Save comparison figure
     savefig(fullfile(outdir, 'EEE_compare.fig'));
